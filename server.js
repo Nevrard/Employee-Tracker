@@ -30,11 +30,11 @@ const connection = mysql.createConnection({
   connection.connect((err) => {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
-    mainMenu();
+    renderMenu();
   });
 
 // Main menu function
-function mainMenu(){
+function renderMenu(){
 
     // Prompt user to choose an option
     inquirer
@@ -124,7 +124,7 @@ function renderAllEmp(){
         console.table(res);
 
         //Back to main menu
-        mainMenu();
+        renderMenu();
     });
 }
 
@@ -163,7 +163,7 @@ function renderAllEmpByDept(){
                 console.table(res);
 
                 // Back to main menu
-                mainMenu();
+                renderMenu();
             });
         });
     });
