@@ -3,12 +3,15 @@ CREATE DATABASE employeeDB;
 
 USE employeeDB;
 
+   -------Departement Table
+
 CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
 );
 
+   --------- Role Table
 
 CREATE TABLE role (
     id INT NOT NULL AUTO_INCREMENT,
@@ -18,6 +21,8 @@ CREATE TABLE role (
     PRIMARY KEY (id),
     FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
 );
+
+    -------Employee Table
 
 CREATE TABLE employee (
     id INT NOT NULL AUTO_INCREMENT,
