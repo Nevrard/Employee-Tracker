@@ -73,6 +73,9 @@ function renderMenu(){
             case "View all employees by role":
                 renderAllEmpByRole();
                 break;
+           case "View all employees by manager":
+                renderAllEmployeeByMngr();
+                break;
 
             case "Add employee":
                 addEmployee();
@@ -90,9 +93,7 @@ function renderMenu(){
             case "Update employee manager":
                 updateEmployeeMngr();
                 break;
-            case "View all employees by manager":
-                viewAllEmployeeByMngr();
-                break;
+            
             case "Delete employee":
                 deleteEmployee();
                 break;
@@ -109,33 +110,33 @@ function renderMenu(){
     });
 }
 
-// View all employees 
+
 function renderAllEmp(){
 
-    // Query to view all employees
+   
     let query = "SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC";
 
-    // Query from connection
+    
     connection.query(query, function(err, res) {
         if(err) return err;
         console.log("\n");
 
-        // Display query results using console.table
+        
         console.table(res);
 
-        //Back to main menu
+        
         renderMenu();
     });
 }
 
-// View all employees by department
+
 function renderAllEmpByDept(){
 
-    // Set global array to store department names
+    
     let deptArr = [];
     connection.query('SELECT * FROM department', (err, results) => {
         if (err) throw err;
-        // once you have the items, prompt the user for which they'd like to bid on
+        
         inquirer
           .prompt(
             {
@@ -153,18 +154,110 @@ function renderAllEmpByDept(){
           )   
         .then((answer) => {
 
-            // Query all employees depending on selected department
+            
             const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE department.name = '${answer.department}' ORDER BY ID ASC`;
             connection.query(query, (err, res) => {
                 if(err) return err;
                 
-                // Show results in console.table
+                
                 console.log("\n");
                 console.table(res);
 
-                // Back to main menu
+               
                 renderMenu();
             });
         });
     });
 }
+
+function renderAllEmpByRole(){
+
+   
+    let roleArr = [];
+    connection.query('SELECT * FROM role', (err, results) => {
+        if (err) throw err;
+        
+        inquirer
+          .prompt(
+            {
+              name: 'role',
+              type: 'rawlist',
+              choices() {
+                 
+                results.forEach(({ title }) => {
+                  roleArr.push(title);
+                });
+                return roleArr;
+              },
+              message: "Which role would you like to search?",
+            }
+          )   
+        .then((answer) => {
+
+            
+            const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE role.title = '${answer.role}' ORDER BY ID ASC`;
+            connection.query(query, (err, res) => {
+                if(err) return err;
+                
+                
+                console.log("\n");
+                console.table(res);
+
+                u
+                renderMenu();
+            });
+        });
+    });
+}
+
+function renderAllEmployeeByMngr(){
+
+    
+    let managerArr = [];
+   
+    connection.query("select DISTINCT m.id, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id  where e.manager_id IS NOT NULL", (err, results) => {
+        if (err) throw err;
+       //dataMngr=results.data;
+        inquirer
+          .prompt(
+            {
+              name: 'manager',
+              type: 'rawlist',
+              choices() {
+                 
+                 results.forEach((data) => {
+                  managerArr.push(data.Manager);
+                });
+                return managerArr;
+              },
+            
+              message: "Which role would you like to search?",
+            }
+          ) 
+            
+        .then((answer) => {
+                  //console.log(results[1].id);
+            let managerID;
+            for (i=0; i < results.length; i++){
+                if (answer.manager === results[i].Manager){
+                    managerID = results[i].id;
+                }
+            }
+
+            
+            const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE e.manager_id = '${managerID}' ORDER BY ID ASC`;
+            connection.query(query, (err, res) => {
+                if(err) return err;
+                
+               
+                console.log("\n");
+                console.table(res);
+
+               
+                renderMenu();
+            });
+        });
+    });
+}
+
+
