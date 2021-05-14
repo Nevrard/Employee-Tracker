@@ -41,7 +41,7 @@ function renderMenu(){
     .prompt({
       name: "action",
       type: "list",
-      message: "MAIN MENU",
+      message: "HERE IS THE  MENU",
       choices: [
         "View all employees",
         "View all employees by role",
@@ -245,7 +245,10 @@ function renderAllEmployeeByMngr(){
             }
 
             
-            const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE e.manager_id = '${managerID}' ORDER BY ID ASC`;
+            const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, 
+            department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager 
+            FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id 
+            INNER JOIN department ON role.department_id = department.id WHERE e.manager_id = '${managerID}' ORDER BY ID ASC`;
             connection.query(query, (err, res) => {
                 if(err) return err;
                 
@@ -260,4 +263,60 @@ function renderAllEmployeeByMngr(){
     });
 }
 
+// Add Role
+function addRole(){
+
+    
+    let departmentArr = [];
+
+    connection.query('SELECT id, name FROM department ORDER BY name ASC',(err, results)=>{
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                
+                name: "roleTitle",
+                type: "input",
+                message: "Role title: "
+            },
+            {
+                
+                name: "salary",
+                type: "number",
+                message: "Salary: "
+            },
+            {   
+                
+                name: "dept",
+                type: "list",
+                message: "Department: ",
+                choices(){
+                 
+                    results.forEach(({ name }) => {
+                      departmentArr.push(name);
+                    });
+                    return departmentArr;
+                  },
+            }]).then((answer) => {
+
+            
+                let deptID;
+
+               for (i=0; i < results.length; i++){
+                    if (answer.dept == results[i].name){
+                        deptID = results[i].id;
+                    }
+                }
+
+               
+                connection.query(`INSERT INTO role (title, salary, department_id)
+                VALUES ("${answer.roleTitle}", ${answer.salary}, ${deptID})`, (err, res) => {
+                    if(err) return err;
+                    console.log(`\n ROLE ${answer.roleTitle} ADDED...\n`);
+                    renderMenu();
+                });
+
+            });
+
+        });
+}
 
