@@ -409,7 +409,7 @@ function addEmployee() {
   })
 }
 
-//============= Update Employee ==========================//
+//============= Update Employee's role ==========================//
 function updateEmployeeRole() {
     connection.query("SELECT employee.id,employee.last_name FROM employee JOIN role ON employee.role_id = role.id;", function(err, res) {
     // console.log(res)
@@ -457,7 +457,7 @@ function updateEmployeeRole() {
 
   }
 
-  //update employee's manager
+  //======update employee's manager======//
 
   
 function updateEmployeeMngr() {
@@ -508,25 +508,53 @@ function updateEmployeeMngr() {
   }
 
   //========= Deleted employees=========//
-
- connection.query("select DISTINCT m.id, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id  where e.manager_id IS NOT NULL", (err, results) => {
+  function deleteEmployee() {
+      let employeeArr=[];
+        connection.query("select DISTINCT id, concat(m.first_name, ' ' ,  m.last_name) AS Employee FROM employee", (err, results) => {
         if (err) throw err;
        //dataMngr=results.data;
         inquirer
           .prompt(
+           [   
             {
-              name: 'manager',
+              name: 'Employee',
               type: 'rawlist',
               choices() {
                  
-                 results.forEach((data) => {
-                  managerArr.push(data.Manager);
+                 results.forEach(({Employee}) => {
+                  employeeArr.push(Employee);
                 });
-                return managerArr;
+                return employeeArr;
               },
             
-              message: "Which role would you like to search?",
-            }
-          ) 
+              message: "Who is the Employee would you like to delete?",
+            },
+            { name: "confirm",
+                type: "list",
+                message: "Kindly Confirm deletion",
+                choices: ["NO", "YES"]
+             }
+        
             
-        .then((answer)
+        ]).then((answer)=>{
+           
+            if(answer.confirm === "YES"){
+                let employeeID;
+                for (i=0; i < results.length; i++){
+                    if (answer.Employee === results[i].Employee){
+                             employeeID = results[i].id;
+                            }
+                        }
+                connection.query(`DELETE FROM employee WHERE id=${employeeID};`, (err, res) => {
+                    if(err) return err;
+
+                    // confirm deleted employee
+                    console.log(`\n EMPLOYEE '${answer.employee}' DELETED...\n `);
+                    
+                    // back to main menu
+                    renderMenu();
+                    });
+              }           
+          });
+        });
+  }
