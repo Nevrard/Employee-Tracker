@@ -485,18 +485,18 @@ function updateEmployeeMngr() {
             choices: selectManager()
           },
       ]).then((answer) =>{
-        var roleId = selectManager().indexOf(answer.role) + 1
+        var ManagerId = selectManager().indexOf(answer.Manager) + 1
         var employeeID;
         for(let i=0;i < res.length;i++)
             {
                 if (answer.lastName===res[i].last_name)
                 employeeID=res[i].id
             }
-        connection.query(`UPDATE employee SET role_id = ${roleId} WHERE id = ${employeeID}`, (err, res) => {
+        connection.query(`UPDATE employee SET manager_id = ${ManagerId} WHERE id = ${employeeID}`, (err, res) => {
             if(err) return err;
 
             // confirm update employee
-            console.log(`\n ${answer.lastName} ROLE UPDATED TO ${answer.role}...\n `);
+            console.log(`\n ${answer.lastName} Manager UPDATED TO ${answer.Manager}...\n `);
 
             // back to main menu
             renderMenu();
@@ -506,3 +506,27 @@ function updateEmployeeMngr() {
   });
 
   }
+
+  //========= Deleted employees=========//
+
+ connection.query("select DISTINCT m.id, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id  where e.manager_id IS NOT NULL", (err, results) => {
+        if (err) throw err;
+       //dataMngr=results.data;
+        inquirer
+          .prompt(
+            {
+              name: 'manager',
+              type: 'rawlist',
+              choices() {
+                 
+                 results.forEach((data) => {
+                  managerArr.push(data.Manager);
+                });
+                return managerArr;
+              },
+            
+              message: "Which role would you like to search?",
+            }
+          ) 
+            
+        .then((answer)
