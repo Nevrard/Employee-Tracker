@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "console-table-printer": "^2.9.0",
     "console.table": "^0.10.0",
     "mysql": "^2.16.0"
   },
