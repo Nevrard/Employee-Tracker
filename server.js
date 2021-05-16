@@ -158,7 +158,8 @@ function renderAllEmpByDept(){
         .then((answer) => {
 
             
-            const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE department.name = '${answer.department}' ORDER BY ID ASC`;
+            const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, 
+            department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE department.name = '${answer.department}' ORDER BY ID ASC`;
             connection.query(query, (err, res) => {
                 if(err) return err;
                  console.log("\n");
@@ -349,7 +350,7 @@ const addDepartment=()=>{
         })
         return managersArr;
 }
-//============= Add Employee ==========================//
+//====== Add Employee ==========//
 function addEmployee() { 
     inquirer.prompt([
         {
@@ -398,7 +399,7 @@ function updateEmployeeRole() {
     connection.query("SELECT employee.id,employee.last_name FROM employee JOIN role ON employee.role_id = role.id;", function(err, res) {
     // console.log(res)
      if (err) throw err
-     console.log(res)
+     //console.log(res)
     inquirer.prompt([
           {
             name: "lastName",
@@ -446,7 +447,7 @@ function updateEmployeeMngr() {
     connection.query("SELECT employee.id,employee.last_name FROM employee JOIN role ON employee.role_id = role.id;", function(err, res) {
     // console.log(res)
      if (err) throw err
-     console.log(res)
+    // console.log(res)
     inquirer.prompt([
           {
             name: "lastName",
@@ -669,7 +670,7 @@ function viewDepartmenttBudget () {
                            departmentID = results[i].id;
                           }
                       }
-              connection.query(`SELECT department.name AS department, sum(role.salary) FROM employee e LEFT JOIN employee m ON e.manager_id = m.id
+              connection.query(`SELECT department.name AS department, sum(role.salary) as Budget FROM employee e LEFT JOIN employee m ON e.manager_id = m.id
                INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id  where department.name="${answer.Department}";`, (err, res) => {
                   if(err) return err;
 
