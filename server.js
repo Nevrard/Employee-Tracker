@@ -318,7 +318,7 @@ const addDepartment=()=>{
         )
         .then((answer)=>{
             connection.query(`insert into Department (name) values ("${answer.dptName}")`)
-            console.log(`\n Department ${answer.dptname} ADDED...\n`);
+            console.log(`\n Department ${answer.dptName} ADDED...\n`);
             renderMenu()
 
         });
@@ -415,7 +415,7 @@ function updateEmployeeRole() {
           {
             name: "role",
             type: "rawlist",
-            message: "What is the Employees new title? ",
+            message: "What is the Employees new role? ",
             choices: selectRole()
           },
       ]).then((answer) =>{
