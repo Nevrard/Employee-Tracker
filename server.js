@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const  {printTable}  = require("console-table-printer");
+const figlet = require('figlet');
 
 // Connection Properties
 const connectionProperties = {
@@ -28,6 +29,14 @@ const connection = mysql.createConnection({
 
   connection.connect((err) => {
     if (err) throw err;
+
+    console.log(figlet.textSync('EMPLOYEE TRACKER', {
+        font:"big",
+        horizontalLayout: 'default',
+        verticalLayout: 'default',
+        width: 100,
+        whitespaceBreak: true
+      }))
     // run the start function after the connection is made to prompt the user
     renderMenu();
   });
