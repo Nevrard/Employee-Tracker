@@ -25,14 +25,23 @@ This application interracts with the User trough the command prompt, where user 
 ## Specifications
 
 The application is Built using following tools and languages :
+
     -Node.js
+
     -Javascript
+
     -MySQLWorkvbench
+
 Dependencies are:
+
     -inquirer
+
     -mysql
+
     -console-table-printer
+
     -Figlet
+    
 To run the apllication ,type "node server.js" in your terminal
 then select an action from the prompted Menu
 
