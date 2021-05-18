@@ -15,9 +15,13 @@ The applicaction was built as tool for a an Employer  to be able to manage his t
 This application provides the following options:
 
 -Add a new Department, role and Employee
+
 -View all employee within the organization, By role , by department,by manager
+
 -Update an employee role or Manager
+
 -View Department Salary Budget
+
 -Delete an employee ,department, or Role.
 
 This application interracts with the User trough the command prompt, where user has to select which action to be pefromed and provides all the information required for that particular action.
@@ -41,7 +45,7 @@ Dependencies are:
     -console-table-printer
 
     -Figlet
-    
+
 To run the apllication ,type "node server.js" in your terminal
 then select an action from the prompted Menu
 
